@@ -1,5 +1,12 @@
 {
   "name": "solomatcha",
   "compatibility_date": "2026-11-14",
-  "assets": { "directory": "./public" }
+  "assets": { "directory": "./public" },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true
+    }
+  }
 }
