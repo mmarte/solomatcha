@@ -1,4 +1,4 @@
-# Solo Matcha Publishing Plan
+# SoloMatcha Publishing Plan
 
 Prepared 2026-11-12
 
