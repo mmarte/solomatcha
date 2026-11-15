@@ -188,3 +188,14 @@ def test_generate_gemini_success_and_quota_error(monkeypatch, tmp_path):
     monkeypatch.setattr(urllib.request, "urlopen", boom)
     with pytest.raises(generate.ProviderError):
         generate.generate_text("p")
+
+
+def test_body_start_snippet_after_body_tag_and_skipped_on_no_ads(project):
+    site = json.loads((project / "site.json").read_text())
+    site["body_start_snippets"] = ['<noscript id="gtmns">x</noscript>']
+    (project / "site.json").write_text(json.dumps(site))
+    (project / "content" / "pages" / "legal.md").write_text("---\nno_ads: true\ntitle: Legal\n---\n\nText.\n")
+    run(project)
+    home = (project / "out" / "index.html").read_text()
+    assert home.index("<body>") < home.index("gtmns") < home.index('class="skip"')
+    assert "gtmns" not in (project / "out" / "legal" / "index.html").read_text()

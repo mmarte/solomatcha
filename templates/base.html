@@ -24,6 +24,9 @@
 {% endfor %}
 </head>
 <body>
+{# Snippets that must sit right after <body> (e.g. the Tag Manager noscript) go in site.json under body_start_snippets. #}
+{% for snippet in ([] if no_ads else site.body_start_snippets|default([])) %}{{ snippet|safe }}
+{% endfor %}
 <a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
   <header class="mast">
