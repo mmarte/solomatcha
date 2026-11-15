@@ -3,7 +3,7 @@ title: Privacy
 description: What data SoloMatcha collects, which third parties may set cookies, and how to contact us.
 ---
 
-Last updated: TODO(date): set the date you publish this page.
+Last updated: November 15, 2026.
 
 SoloMatcha (solomatcha.com) is a content website. This page explains what information is collected when you visit and who collects it.
 
@@ -21,7 +21,7 @@ Some links on SoloMatcha go to retailers. If you click one, the retailer or its 
 
 ## Advertising
 
-SoloMatcha shows ads served by third-party advertising partners. These partners may use cookies and similar technologies to show ads and measure them, including ads based on your visits to this and other websites. Where the law requires it, you will be asked for your choices through a consent message before such cookies are set. TODO(ad-partner): name the ad network you joined and link to its privacy policy and its opt-out page.
+SoloMatcha plans to show ads served by third-party advertising networks. When ads are switched on, this page will name each network and link to its privacy policy and opt-out page. These partners may use cookies and similar technologies to show ads and measure them, including ads based on your visits to this and other websites. Where the law requires it, you will be asked for your choices through a consent message before such cookies are set.
 
 You can also opt out of personalised advertising through your browser settings, or through the industry opt-out pages at [optout.aboutads.info](https://optout.aboutads.info) and [youronlinechoices.com](https://www.youronlinechoices.com).
 
