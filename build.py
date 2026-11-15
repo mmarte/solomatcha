@@ -196,6 +196,7 @@ def load_pages(affiliates, problems, include_drafts=False):
             "description": meta.get("description") or meta["title"],
             "html": html_body,
             "footer": bool(meta.get("footer", True)),
+            "no_ads": bool(meta.get("no_ads", False)),
         })
     return pages
 
@@ -326,7 +327,7 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
     # Static pages
     for p in pages:
         write(f"{p['slug']}/index.html", "page.html",
-              page_title=f"{p['title']} | {site['name']}", page_description=p["description"], page=p)
+              page_title=f"{p['title']} | {site['name']}", page_description=p["description"], page=p, no_ads=p["no_ads"])
 
     # 404
     write("404.html", "404.html", page_title=f"Page not found | {site['name']}",

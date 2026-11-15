@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="/assets/site.css?v={{ css_version }}">
 {% block head_extra %}{% endblock %}
 {# Ad network tags and analytics go in site.json under head_snippets. #}
-{% for snippet in site.head_snippets %}{{ snippet|safe }}
+{% for snippet in ([] if no_ads else site.head_snippets) %}{{ snippet|safe }}
 {% endfor %}
 </head>
 <body>
@@ -55,7 +55,7 @@
   </footer>
 </div>
 {# Scripts that must load at the end of the page go in site.json under body_end_snippets. #}
-{% for snippet in site.body_end_snippets %}{{ snippet|safe }}
+{% for snippet in ([] if no_ads else site.body_end_snippets) %}{{ snippet|safe }}
 {% endfor %}
 </body>
 </html>

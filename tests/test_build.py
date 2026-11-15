@@ -148,3 +148,13 @@ def test_generate_pick_skips_reviews_and_existing(monkeypatch):
             {"slug": "x", "type": "explainer", "status": "drafted"},
             {"slug": "ok", "type": "how-to", "status": "planned"}]
     assert generate.pick(rows)["slug"] == "ok"
+
+
+def test_no_ads_pages_get_no_snippets(project):
+    site = json.loads((project / "site.json").read_text())
+    site["head_snippets"] = ['<script id="adtag">1</script>']
+    (project / "site.json").write_text(json.dumps(site))
+    (project / "content" / "pages" / "legal.md").write_text("---\nno_ads: true\ntitle: Legal\n---\n\nText.\n")
+    run(project)
+    assert "adtag" not in (project / "out" / "legal" / "index.html").read_text()
+    assert "adtag" in (project / "out" / "index.html").read_text()
