@@ -109,7 +109,7 @@ def call_gemini(prompt, key):
             parts = data["candidates"][0]["content"]["parts"]
             return "".join(p.get("text", "") for p in parts)
         except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", "replace")[:300]
+            detail = " ".join(exc.read().decode("utf-8", "replace").split())[:600]
             last = f"HTTP {exc.code} from Gemini ({model}): {detail}"
             if exc.code in (429, 500, 503) and attempt < 2:
                 time.sleep(20 * (attempt + 1))
@@ -172,7 +172,7 @@ def main(argv=None):
         text = stub(topic, today) if args.stub else clean(generate_text(prompt))
     except ProviderError as exc:
         # Not a failure of the site: skip this run, keep the topic planned, try again next time.
-        print(f"::warning title=Draft skipped::{exc}")
+        print(f"::warning title=Draft skipped::{' '.join(str(exc).split())}")
         print(f"Draft skipped, topic {topic['slug']} stays planned: {exc}")
         return 0
     if not text.startswith("---"):
