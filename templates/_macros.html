@@ -1,0 +1,11 @@
+{% macro guide_list(items, show_category=True) %}
+<ul class="guides">
+  {% for g in items %}
+  <li>
+    <span class="t"><a href="{{ g.url }}">{{ g.title }}</a></span>
+    <span class="k">{% if show_category %}{{ g.category_label }} &middot; {% endif %}<time datetime="{{ g.date.isoformat() }}">{{ g.date|datefmt }}</time></span>
+    <p class="d">{{ g.description }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="{{ site.language }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description }}">
+{% if noindex %}<meta name="robots" content="noindex">{% else %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:type" content="{{ og_type|default('website') }}">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="/assets/site.css?v={{ css_version }}">
+{% block head_extra %}{% endblock %}
+{# Ad network tags and analytics go in site.json under head_snippets. #}
+{% for snippet in site.head_snippets %}{{ snippet|safe }}
+{% endfor %}
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="mast">
+    <a class="mark" href="/">Solo<span>Matcha</span></a>
+    <nav aria-label="Sections">
+      <a href="/#label">Label test</a>
+      <a href="/#grades">Grades</a>
+      <a href="/#prices">Prices</a>
+      <a href="/#whisk">Whisking</a>
+      <a href="/guides/">Guides</a>
+    </nav>
+  </header>
+
+  <main id="main">
+  {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    {% if site.footer_disclosure %}
+    <p><strong>How this site is paid for.</strong> {{ site.footer_disclosure }}{% if 'disclosure' in page_slugs %} <a href="/disclosure/">Details</a>{% endif %}</p>
+    {% endif %}
+    {% if site.medical_line %}<p>{{ site.medical_line }}</p>{% endif %}
+    <nav class="footnav" aria-label="Footer">
+      <a href="/guides/">All guides</a>
+      {% for p in footer_pages %}<a href="/{{ p.slug }}/">{{ p.title }}</a>{% endfor %}
+      <a href="/feed.xml">RSS</a>
+    </nav>
+    <p class="fine">{{ site.name }} &middot; {{ site.domain }}</p>
+  </footer>
+</div>
+{# Scripts that must load at the end of the page go in site.json under body_end_snippets. #}
+{% for snippet in site.body_end_snippets %}{{ snippet|safe }}
+{% endfor %}
+</body>
+</html>

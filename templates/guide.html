@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block head_extra %}
+<meta property="article:published_time" content="{{ guide.date.isoformat() }}">
+{% if guide.updated %}<meta property="article:modified_time" content="{{ guide.updated.isoformat() }}">{% endif %}
+<script type="application/ld+json">{{ jsonld|safe }}</script>
+{% endblock %}
+{% block content %}
+<article class="article">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/guides/">Guides</a> / <a href="/guides/topic/{{ guide.category }}/">{{ guide.category_label }}</a>
+  </nav>
+  <h1 class="page-title">{{ guide.title }}</h1>
+  <p class="meta">
+    <time datetime="{{ guide.date.isoformat() }}">{{ guide.date|datefmt }}</time>
+    &middot; {{ guide.minutes }} min read
+    {% if guide.updated %}&middot; Updated <time datetime="{{ guide.updated.isoformat() }}">{{ guide.updated|datefmt }}</time>{% endif %}
+  </p>
+  <p class="dek">{{ guide.description }}</p>
+
+  {# Shown automatically when the guide contains at least one aff: link. #}
+  {% if guide.affiliate_count %}
+  <aside class="disclosure" aria-label="Affiliate disclosure"><strong>Disclosure</strong>{{ site.article_disclosure }}{% if 'disclosure' in page_slugs %} <a href="/disclosure/">How SoloMatcha is paid</a>.{% endif %}</aside>
+  {% endif %}
+
+  <div class="prose">
+    {{ guide.html|safe }}
+  </div>
+
+  {% if older or newer %}
+  <nav class="pager" aria-label="More guides in order">
+    {% if older %}<a class="prev" href="{{ older.url }}"><small>Older</small><span>{{ older.title }}</span></a>{% else %}<span></span>{% endif %}
+    {% if newer %}<a class="next" href="{{ newer.url }}"><small>Newer</small><span>{{ newer.title }}</span></a>{% endif %}
+  </nav>
+  {% endif %}
+</article>
+
+{% if related %}
+<section class="more" aria-label="Related guides">
+  <h2>More guides</h2>
+  {{ m.guide_list(related) }}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block content %}
+<section class="pagehead">
+  <p class="eyebrow">{% if current_category %}Guides{% else %}The archive{% endif %}</p>
+  <h1 class="page-title">{% if current_category %}{{ current_category.label }}{% else %}All guides{% endif %}</h1>
+  <p class="intro">{% if current_category %}{{ total }} guide{{ '' if total == 1 else 's' }} in this topic, newest first.{% else %}Every SoloMatcha guide, newest first. Pick a topic to narrow the list.{% endif %}</p>
+  <ul class="chips" aria-label="Topics">
+    <li><a class="chip" href="/guides/"{% if not current_category %} aria-current="page"{% endif %}>All ({{ total_guides }})</a></li>
+    {% for c in categories %}
+    <li><a class="chip" href="/guides/topic/{{ c.slug }}/"{% if current_category and current_category.slug == c.slug %} aria-current="page"{% endif %}>{{ c.label }} ({{ c.count }})</a></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="archive" style="padding-bottom: 48px;">
+  {% if groups %}
+    {% for g in groups %}
+    <h2 class="month">{{ g.label }}</h2>
+    {{ m.guide_list(g.entries, show_category=not current_category) }}
+    {% endfor %}
+  {% else %}
+    <p class="empty">The first guides are on the way. They will appear here as soon as they are published.</p>
+  {% endif %}
+</section>
+{% endblock %}
