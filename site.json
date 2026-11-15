@@ -1,0 +1,37 @@
+{
+  "name": "SoloMatcha",
+  "domain": "solomatcha.com",
+  "url": "https://solomatcha.com",
+  "tagline": "A buyer's guide to pure matcha",
+  "description": "A buyer's guide to pure matcha: how to read a tin, what the grades mean, and why the price keeps climbing.",
+  "language": "en",
+
+  "head_snippets": [],
+  "body_end_snippets": [],
+
+  "footer_disclosure": "SoloMatcha plans to earn a commission when you buy through some links to retailers, and to show ads. Commissions do not change the price you pay.",
+  "medical_line": "Nothing here is medical advice. We do not claim that matcha treats or prevents any condition.",
+  "article_disclosure": "This guide contains affiliate links. If you buy through them, SoloMatcha may earn a commission at no extra cost to you.",
+
+  "categories": {
+    "explainers": "Explainers",
+    "how-to": "How-to",
+    "buying-guides": "Buying guides",
+    "comparisons": "Comparisons",
+    "reviews": "Tastings and reviews"
+  },
+
+  "health_claim_patterns": [
+    "\\bcures?\\b",
+    "\\bdetox(ify|ifies|ing)?\\b",
+    "\\bburns? (body )?fat\\b",
+    "\\bweight[- ]loss\\b",
+    "\\banti-?aging\\b",
+    "\\banti-?cancer\\b",
+    "\\bcancer[- ]fighting\\b",
+    "\\blowers? (your )?(blood pressure|cholesterol|blood sugar)\\b",
+    "\\bboosts? (your )?(metabolism|immune system|immunity|focus|energy|mood)\\b",
+    "\\bprevents? (cancer|disease|heart disease|diabetes)\\b",
+    "\\btreats? (anxiety|depression|cancer|diabetes|inflammation)\\b"
+  ]
+}

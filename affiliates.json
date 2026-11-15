@@ -1,0 +1,7 @@
+{
+  "_help": "Add one entry per affiliate link. In a guide, write [link text](aff:key). Keys must be lowercase letters, digits, - or _. Entries starting with an underscore are ignored.",
+  "_example": {
+    "url": "https://example.com/product?aff=YOUR_ID",
+    "merchant": "Example Tea Co"
+  }
+}
