@@ -17,10 +17,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements.txt -r pipeline/requirements.txt
+      - run: pip install -r requirements.txt
       - name: Draft the next planned topic
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
         run: python3 pipeline/generate.py
       - name: Check the site still builds with drafts
         run: python3 build.py --drafts --out /tmp/preview
