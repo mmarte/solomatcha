@@ -158,3 +158,33 @@ def test_no_ads_pages_get_no_snippets(project):
     run(project)
     assert "adtag" not in (project / "out" / "legal" / "index.html").read_text()
     assert "adtag" in (project / "out" / "index.html").read_text()
+
+
+def test_generate_skips_quietly_without_key(monkeypatch, tmp_path, capsys):
+    sys.path.insert(0, str(ROOT / "pipeline"))
+    import generate
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setattr(generate, "GUIDES", tmp_path)
+    monkeypatch.setattr(generate, "write_topics", lambda *a: (_ for _ in ()).throw(AssertionError("must not write")))
+    assert generate.main([]) == 0          # no key: warn, exit 0, change nothing
+    assert "::warning" in capsys.readouterr().out
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_generate_gemini_success_and_quota_error(monkeypatch, tmp_path):
+    import io
+    import urllib.error
+    import urllib.request
+    sys.path.insert(0, str(ROOT / "pipeline"))
+    import generate
+    monkeypatch.setenv("GEMINI_API_KEY", "k")
+    ok = json.dumps({"candidates": [{"content": {"parts": [{"text": "---\ntitle: T\n---\nBody"}]}}]}).encode()
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=0: io.BytesIO(ok))
+    assert generate.generate_text("p").startswith("---")
+
+    def boom(req, timeout=0):
+        raise urllib.error.HTTPError("u", 400, "bad", {}, io.BytesIO(b"quota"))
+    monkeypatch.setattr(urllib.request, "urlopen", boom)
+    with pytest.raises(generate.ProviderError):
+        generate.generate_text("p")
