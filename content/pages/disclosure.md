@@ -1,4 +1,5 @@
 ---
+no_ads: true
 title: How SoloMatcha is paid
 description: How SoloMatcha earns money from affiliate links and advertising, and what that does and does not change.
 ---

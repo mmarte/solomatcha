@@ -108,7 +108,15 @@ def main(argv=None):
         print(prompt)
         return 0
 
-    text = stub(topic, today) if args.stub else clean(call_api(prompt))
+    if not args.stub and not os.environ.get("ANTHROPIC_API_KEY"):
+        print("ERROR: ANTHROPIC_API_KEY is not set. Add it under repo Settings > Secrets and variables > Actions.", file=sys.stderr)
+        return 1
+    try:
+        text = stub(topic, today) if args.stub else clean(call_api(prompt))
+    except Exception as exc:  # surface the real reason in the Actions log
+        print(f"ERROR: the Anthropic API call failed ({type(exc).__name__}): {exc}", file=sys.stderr)
+        print(f"Model used: {MODEL}. Override with the SOLOMATCHA_MODEL environment variable.", file=sys.stderr)
+        return 1
     if not text.startswith("---"):
         print("Model output has no front matter; refusing to save.", file=sys.stderr)
         return 1
