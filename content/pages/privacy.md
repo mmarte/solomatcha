@@ -1,6 +1,4 @@
 ---
-draft: true
-no_ads: true
 title: Privacy
 description: What data SoloMatcha collects, which third parties may set cookies, and how to contact us.
 ---
@@ -27,10 +25,6 @@ SoloMatcha shows ads served by third-party advertising partners. These partners 
 
 You can also opt out of personalised advertising through your browser settings, or through the industry opt-out pages at [optout.aboutads.info](https://optout.aboutads.info) and [youronlinechoices.com](https://www.youronlinechoices.com).
 
-## Analytics
-
-TODO(analytics): if you add an analytics tool (such as Google Analytics), name it here and say what it collects. If you do not use one, delete this section.
-
 ## Your rights
 
 Depending on where you live, you may have the right to access, correct or delete personal data held about you, or to object to certain processing. Because we do not hold an account for you, most requests are best directed to the third parties above. You can still contact us about anything on this page.
@@ -41,7 +35,7 @@ SoloMatcha is not directed at children under 13 and we do not knowingly collect 
 
 ## Contact
 
-TODO(contact): add an email address where readers can reach you.
+info@solomatcha.com
 
 ## Changes
 
