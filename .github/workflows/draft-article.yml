@@ -1,0 +1,44 @@
+name: Draft next article
+
+on:
+  schedule:
+    - cron: "0 14 * * 1,4"   # Monday and Thursday, 14:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt -r pipeline/requirements.txt
+      - name: Draft the next planned topic
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 pipeline/generate.py
+      - name: Check the site still builds with drafts
+        run: python3 build.py --drafts --out /tmp/preview
+      - name: Open a pull request for review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain content)" ]; then
+            echo "Nothing drafted."; exit 0
+          fi
+          slug=$(git status --porcelain content/guides | head -1 | sed 's|.*guides/||; s|\.md||')
+          branch="draft/${slug}-$(date +%Y%m%d)"
+          git config user.name "solomatcha-bot"
+          git config user.email "solomatcha-bot@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add content
+          git commit -m "Draft guide: ${slug}"
+          git push origin "$branch"
+          gh pr create --title "Draft guide: ${slug}" \
+            --body "Automated draft. Review against the checklist below before merging. A guide stays hidden while it says draft: true, and the production build fails if a published guide still has a TODO or a health claim." \
+            --base main --head "$branch"
