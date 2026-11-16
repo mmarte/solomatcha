@@ -22,6 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@500;700;800&display=swap">
 <link rel="stylesheet" href="/assets/site.css?v={{ css_version }}">
+<script defer src="/assets/site.js?v={{ css_version }}"></script>
 {% block head_extra %}{% endblock %}
 {# Ad network tags and analytics go in site.json under head_snippets. #}
 {% for snippet in ([] if no_ads else site.head_snippets) %}{{ snippet|safe }}

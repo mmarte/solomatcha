@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="t d">
+<title id="t">What the grade words usually mean in use</title>
+<desc id="d">Culinary matcha is usually sold for baking and smoothies, daily or premium for everyday cups and lattes, ceremonial for whisking with water and drinking straight.</desc>
+<style>
+:root{--bg:#f7f9f2;--ink:#17241a;--mut:#55665a;--acc:#3b6929;--foam:#dbe8b4;--rule:#c5cfba}
+@media (prefers-color-scheme: dark){:root{--bg:#18211a;--ink:#e3ead8;--mut:#9aab9c;--acc:#a9cb7c;--foam:#26351f;--rule:#2c3b2e}}
+text{font-family:Georgia,'Times New Roman',serif;fill:var(--ink)} .s{font-family:Arial,Helvetica,sans-serif;fill:var(--mut);font-size:15px}
+</style>
+<rect width="900" height="300" rx="14" fill="var(--bg)"/>
+<g stroke="var(--rule)" stroke-width="2"><rect x="40" y="50" width="240" height="150" rx="10" fill="var(--foam)"/><rect x="330" y="50" width="240" height="150" rx="10" fill="var(--foam)"/><rect x="620" y="50" width="240" height="150" rx="10" fill="var(--foam)"/></g>
+<text x="160" y="100" text-anchor="middle" font-size="26" font-weight="700">Culinary</text><text x="160" y="135" text-anchor="middle" class="s">Baking</text><text x="160" y="160" text-anchor="middle" class="s">Smoothies, ice cream</text>
+<text x="450" y="100" text-anchor="middle" font-size="26" font-weight="700">Daily / premium</text><text x="450" y="135" text-anchor="middle" class="s">Everyday cups</text><text x="450" y="160" text-anchor="middle" class="s">Lattes with milk</text>
+<text x="740" y="100" text-anchor="middle" font-size="26" font-weight="700">Ceremonial</text><text x="740" y="135" text-anchor="middle" class="s">Whisked with water</text><text x="740" y="160" text-anchor="middle" class="s">Drunk straight</text>
+<line x1="60" y1="240" x2="840" y2="240" stroke="var(--acc)" stroke-width="3"/><path d="M840 240l-14-8v16z" fill="var(--acc)"/>
+<text x="60" y="270" class="s">Usually cheaper per gram</text><text x="840" y="270" text-anchor="end" class="s">Usually pricier per gram</text>
+<text x="450" y="30" text-anchor="middle" class="s" font-size="14">Seller labels, not a legal scale. Judge the tin.</text>
+</svg>
