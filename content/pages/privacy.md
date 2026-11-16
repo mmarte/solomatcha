@@ -1,4 +1,5 @@
 ---
+no_ads: true
 title: Privacy
 description: What data SoloMatcha collects, which third parties may set cookies, and how to contact us.
 ---
@@ -14,6 +15,10 @@ We do not ask you to create an account and we do not collect your name or email 
 ## Fonts
 
 Pages load fonts from Google Fonts. When your browser requests them, Google receives your IP address and browser details. See Google's privacy policy for how it handles that data.
+
+## Analytics
+
+SoloMatcha uses Google Tag Manager to load measurement tools, such as Google Analytics, which report how visitors use the site (pages viewed, approximate location, device and browser). These tools use cookies or similar identifiers and send data to Google. See [Google's privacy policy](https://policies.google.com/privacy) and opt out with the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout).
 
 ## Affiliate links
 

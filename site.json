@@ -5,14 +5,17 @@
   "tagline": "A buyer's guide to pure matcha",
   "description": "A buyer's guide to pure matcha: how to read a tin, what the grades mean, and why the price keeps climbing.",
   "language": "en",
-
-  "head_snippets": [],
+  "head_snippets": [
+    "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PVZ7L47K');</script>",
+    "<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-4EJZ67LL4W\"></script>\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4EJZ67LL4W');</script>"
+  ],
+  "body_start_snippets": [
+    "<noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-PVZ7L47K\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript>"
+  ],
   "body_end_snippets": [],
-
   "footer_disclosure": "SoloMatcha plans to earn a commission when you buy through some links to retailers, and to show ads. Commissions do not change the price you pay.",
   "medical_line": "Nothing here is medical advice. We do not claim that matcha treats or prevents any condition.",
   "article_disclosure": "This guide contains affiliate links. If you buy through them, SoloMatcha may earn a commission at no extra cost to you.",
-
   "categories": {
     "explainers": "Explainers",
     "how-to": "How-to",
@@ -20,7 +23,6 @@
     "comparisons": "Comparisons",
     "reviews": "Tastings and reviews"
   },
-
   "health_claim_patterns": [
     "\\bcures?\\b",
     "\\bdetox(ify|ifies|ing)?\\b",
