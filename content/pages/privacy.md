@@ -16,9 +16,9 @@ We do not ask you to create an account and we do not collect your name or email 
 
 Pages load fonts from Google Fonts. When your browser requests them, Google receives your IP address and browser details. See Google's privacy policy for how it handles that data.
 
-## Analytics
+## Analytics and your choice
 
-SoloMatcha uses Google Tag Manager to load measurement tools, such as Google Analytics, which report how visitors use the site (pages viewed, approximate location, device and browser). These tools use cookies or similar identifiers and send data to Google. See [Google's privacy policy](https://policies.google.com/privacy) and opt out with the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout).
+SoloMatcha uses Google Tag Manager and Google Analytics to see which guides people read (pages viewed, approximate location, device and browser). These tools set cookies and send data to Google. They stay off until you click Accept on the banner. If you click Decline, nothing is loaded and no analytics cookies are set. You can change your choice at any time with the Cookie settings link at the bottom of the home page or any guide. Your choice is saved in your browser. See [Google's privacy policy](https://policies.google.com/privacy) and the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout).
 
 ## Embedded video
 
