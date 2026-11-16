@@ -93,7 +93,7 @@ def call_gemini(prompt, key):
     import urllib.error
     import urllib.request
 
-    model = os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash"
+    model = os.environ.get("GEMINI_MODEL") or "gemini-3.8-flash"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = json.dumps({
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
