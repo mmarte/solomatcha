@@ -24,7 +24,8 @@
 <link rel="stylesheet" href="/assets/site.css?v={{ css_version }}">
 <script defer src="/assets/site.js?v={{ css_version }}"></script>
 {% block head_extra %}{% endblock %}
-{# Ad network tags and analytics go in site.json under head_snippets. #}
+{# Ad network tags go in site.json under head_snippets. Analytics go under analytics_scripts and only load after the visitor accepts the banner. #}
+{% if not no_ads and site.analytics_scripts %}<script id="consent-config" type="application/json">{{ site.analytics_scripts|tojson }}</script>{% endif %}
 {% for snippet in ([] if no_ads else site.head_snippets) %}{{ snippet|safe }}
 {% endfor %}
 </head>
@@ -57,11 +58,21 @@
     <nav class="footnav" aria-label="Footer">
       <a href="/guides/">All guides</a>
       {% for p in footer_pages %}<a href="/{{ p.slug }}/">{{ p.title }}</a>{% endfor %}
-      <a href="/feed.xml">RSS</a>
+      <a href="/feed.xml">RSS</a>{% if site.analytics_scripts and not no_ads %}
+      <button type="button" class="linkbtn" data-consent-open>Cookie settings</button>{% endif %}
     </nav>
     <p class="fine">{{ site.name }} &middot; {{ site.domain }}</p>
   </footer>
 </div>
+{% if site.analytics_scripts and not no_ads %}
+<div id="consent-banner" class="consent" role="dialog" aria-live="polite" aria-label="Cookie choices" hidden>
+  <p>SoloMatcha would like to use analytics cookies to see which guides people read. They stay off unless you accept. <a href="/privacy/">Privacy</a></p>
+  <div class="consent-actions">
+    <button type="button" class="btn" data-consent="denied">Decline</button>
+    <button type="button" class="btn primary" data-consent="granted">Accept</button>
+  </div>
+</div>
+{% endif %}
 {# Scripts that must load at the end of the page go in site.json under body_end_snippets. #}
 {% for snippet in ([] if no_ads else site.body_end_snippets) %}{{ snippet|safe }}
 {% endfor %}

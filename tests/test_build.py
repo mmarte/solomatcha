@@ -199,3 +199,16 @@ def test_body_start_snippet_after_body_tag_and_skipped_on_no_ads(project):
     home = (project / "out" / "index.html").read_text()
     assert home.index("<body>") < home.index("gtmns") < home.index('class="skip"')
     assert "gtmns" not in (project / "out" / "legal" / "index.html").read_text()
+
+
+def test_analytics_gated_behind_consent(project):
+    site = json.loads((project / "site.json").read_text())
+    site["analytics_scripts"] = [{"src": "https://www.googletagmanager.com/gtag/js?id=G-TEST"}]
+    (project / "site.json").write_text(json.dumps(site))
+    (project / "content" / "pages" / "legal.md").write_text("---\nno_ads: true\ntitle: Legal\n---\n\nText.\n")
+    run(project)
+    home = (project / "out" / "index.html").read_text()
+    assert 'id="consent-config"' in home and 'id="consent-banner"' in home
+    assert '<script async src="https://www.googletagmanager.com/gtag' not in home   # not loaded directly
+    assert "Cookie settings" in home
+    assert 'id="consent-config"' not in (project / "out" / "legal" / "index.html").read_text()
