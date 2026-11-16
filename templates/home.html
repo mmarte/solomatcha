@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% import "_macros.html" as m %}
+{% block head_extra %}
+<script type="application/ld+json">{{ jsonld|safe }}</script>
+{% endblock %}
 {% block content %}
   <section class="hero">
     <div>

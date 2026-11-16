@@ -3,7 +3,6 @@ title: How to read a matcha label
 description: What each line on a matcha tin tells you, which claims mean nothing, and the five checks to run before you buy.
 category: explainers
 date: 2026-11-14
-draft: true
 ---
 
 A matcha tin is small, and most of what is printed on it is marketing. Five lines carry real information. Learn those and you can judge a tin in under a minute.
@@ -37,7 +36,3 @@ If the shop shows the powder or a photo of a prepared cup, look for a bright gre
 | Date | Harvest or best-by stated | No date anywhere |
 | Grade word | Matches the use you want | Used as the only reason to pay more |
 | Color | Bright, even green | Dull, yellow or brown |
-
-## What we did not test
-
-TODO(first-hand): add one paragraph on the tins we actually checked against this list, with the date and what we found.

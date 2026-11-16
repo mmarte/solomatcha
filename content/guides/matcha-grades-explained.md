@@ -3,7 +3,6 @@ title: Matcha grades explained
 description: Ceremonial, premium, daily and culinary are seller labels, not a legal scale. Here is what each is used for and what to check instead.
 category: explainers
 date: 2026-11-13
-draft: true
 ---
 
 Shop for matcha and you will meet the same four words again and again: ceremonial, premium, daily and culinary. They sound like an official ladder. They are not. As far as we can tell, Japan has no single legal grading standard for matcha, so each seller decides what the words mean.
@@ -27,5 +26,3 @@ Start with the [label](/guides/how-to-read-a-matcha-label/): a single ingredient
 ## A word on prices
 
 Matcha prices have risen in recent years, so a tin that used to be a bargain may not be one now. We will publish the figures and sources in a separate guide rather than quote them here.
-
-TODO(first-hand): add a short comparison from a real tasting of one daily and one ceremonial tin, with the brands and the prices paid.
