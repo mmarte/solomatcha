@@ -8,7 +8,7 @@ text{font-family:Arial,Helvetica,sans-serif;fill:var(--mut);font-size:14px}
 </style>
 <rect width="420" height="300" rx="14" fill="var(--bg)"/>
 <circle cx="210" cy="140" r="104" fill="var(--foam)" stroke="var(--rule)" stroke-width="3"/>
-<path d="M130 190 L160 90 L190 190 L220 90 L250 190 L280 90" fill="none" stroke="var(--acc)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M280 90l-6 14m6-14l-14 6" stroke="var(--acc)" stroke-width="5" stroke-linecap="round"/>
+<path d="M130 190 L160 90 L190 190 L220 90 L250 190 L276 102" fill="none" stroke="var(--acc)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="280,88 266.5,103.5 283.5,108.5" fill="var(--acc)"/>
 <text x="210" y="274" text-anchor="middle">Zigzag, not circles. About 15 seconds.</text>
 </svg>

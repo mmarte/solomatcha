@@ -22,7 +22,7 @@ SoloMatcha uses Google Tag Manager to load measurement tools, such as Google Ana
 
 ## Embedded video
 
-Some pages offer a video from YouTube. Nothing is requested from YouTube until you click play, and then the video loads from YouTube's privacy-enhanced domain. YouTube (Google) may then set cookies or collect data under its own policy.
+Some pages offer a video from YouTube. A preview image loads from YouTube's image server when the page loads, which lets Google see your IP address. The video itself is not requested until you click play, and then it loads from YouTube's privacy-enhanced domain. YouTube (Google) may then set cookies or collect data under its own policy.
 
 ## Affiliate links
 
