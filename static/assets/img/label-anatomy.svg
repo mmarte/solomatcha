@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-labelledby="t d">
+<title id="t">The five parts of a matcha label</title>
+<desc id="d">An example tin label with numbered callouts: one ingredient, named origin, harvest or best-by date, grade word, and color.</desc>
+<style>
+:root{--bg:#f7f9f2;--ink:#17241a;--mut:#55665a;--acc:#3b6929;--foam:#dbe8b4;--rule:#c5cfba}
+@media (prefers-color-scheme: dark){:root{--bg:#18211a;--ink:#e3ead8;--mut:#9aab9c;--acc:#a9cb7c;--foam:#26351f;--rule:#2c3b2e}}
+text{font-family:Georgia,'Times New Roman',serif;fill:var(--ink)} .s{font-family:Arial,Helvetica,sans-serif;fill:var(--mut);font-size:15px} .n{font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:15px;fill:var(--bg)}
+</style>
+<rect width="900" height="480" rx="14" fill="var(--bg)"/>
+<rect x="40" y="40" width="360" height="400" rx="12" fill="var(--foam)" stroke="var(--rule)" stroke-width="2"/>
+<text x="220" y="100" text-anchor="middle" font-size="40" font-weight="700">MATCHA</text>
+<rect x="150" y="116" width="140" height="28" rx="14" fill="var(--acc)"/><text x="220" y="136" text-anchor="middle" class="n">Ceremonial</text>
+<line x1="70" y1="170" x2="370" y2="170" stroke="var(--rule)" stroke-width="2"/>
+<text x="70" y="206" class="s">Ingredients</text><text x="70" y="232" font-size="22">Green tea (matcha)</text>
+<text x="70" y="278" class="s">Origin</text><text x="70" y="304" font-size="22">Uji, Kyoto, Japan</text>
+<text x="70" y="350" class="s">Harvest / best before</text><text x="70" y="376" font-size="22">Harvest 2026</text>
+<rect x="70" y="396" width="300" height="22" rx="4" fill="var(--acc)"/>
+<g>
+<circle cx="440" cy="228" r="13" fill="var(--acc)"/><text x="440" y="233" text-anchor="middle" class="n">1</text><line x1="400" y1="228" x2="427" y2="228" stroke="var(--acc)" stroke-width="2"/>
+<circle cx="440" cy="300" r="13" fill="var(--acc)"/><text x="440" y="305" text-anchor="middle" class="n">2</text><line x1="400" y1="300" x2="427" y2="300" stroke="var(--acc)" stroke-width="2"/>
+<circle cx="440" cy="372" r="13" fill="var(--acc)"/><text x="440" y="377" text-anchor="middle" class="n">3</text><line x1="400" y1="372" x2="427" y2="372" stroke="var(--acc)" stroke-width="2"/>
+<circle cx="440" cy="130" r="13" fill="var(--acc)"/><text x="440" y="135" text-anchor="middle" class="n">4</text><line x1="290" y1="130" x2="427" y2="130" stroke="var(--acc)" stroke-width="2"/>
+<circle cx="440" cy="407" r="13" fill="var(--acc)"/><text x="440" y="412" text-anchor="middle" class="n">5</text><line x1="370" y1="407" x2="427" y2="407" stroke="var(--acc)" stroke-width="2"/>
+</g>
+<text x="470" y="136" font-size="20">Grade word</text><text x="470" y="158" class="s">A hint about use, not a legal scale</text>
+<text x="470" y="234" font-size="20">One ingredient</text><text x="470" y="256" class="s">Matcha and nothing else</text>
+<text x="470" y="306" font-size="20">A named origin</text><text x="470" y="328" class="s">A region, not "imported"</text>
+<text x="470" y="378" font-size="20">A date</text><text x="470" y="400" class="s">Harvest year or best-by</text>
+<text x="470" y="412" font-size="20">Bright, even green</text><text x="470" y="434" class="s">Check the photo or powder</text>
+<text x="880" y="466" text-anchor="end" class="s" font-size="12">Illustration: a generic example, not a real product</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" role="img" aria-labelledby="t d">
+<title id="t">Whisking motion</title>
+<desc id="d">Top view of a bowl with a zigzag M-shaped path showing the whisking motion, about 15 seconds.</desc>
+<style>
+:root{--bg:#f7f9f2;--ink:#17241a;--mut:#55665a;--acc:#3b6929;--foam:#dbe8b4;--rule:#c5cfba}
+@media (prefers-color-scheme: dark){:root{--bg:#18211a;--ink:#e3ead8;--mut:#9aab9c;--acc:#a9cb7c;--foam:#26351f;--rule:#2c3b2e}}
+text{font-family:Arial,Helvetica,sans-serif;fill:var(--mut);font-size:14px}
+</style>
+<rect width="420" height="300" rx="14" fill="var(--bg)"/>
+<circle cx="210" cy="140" r="104" fill="var(--foam)" stroke="var(--rule)" stroke-width="3"/>
+<path d="M130 190 L160 90 L190 190 L220 90 L250 190 L280 90" fill="none" stroke="var(--acc)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M280 90l-6 14m6-14l-14 6" stroke="var(--acc)" stroke-width="5" stroke-linecap="round"/>
+<text x="210" y="274" text-anchor="middle">Zigzag, not circles. About 15 seconds.</text>
+</svg>

@@ -20,6 +20,10 @@ Pages load fonts from Google Fonts. When your browser requests them, Google rece
 
 SoloMatcha uses Google Tag Manager to load measurement tools, such as Google Analytics, which report how visitors use the site (pages viewed, approximate location, device and browser). These tools use cookies or similar identifiers and send data to Google. See [Google's privacy policy](https://policies.google.com/privacy) and opt out with the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout).
 
+## Embedded video
+
+Some pages offer a video from YouTube. Nothing is requested from YouTube until you click play, and then the video loads from YouTube's privacy-enhanced domain. YouTube (Google) may then set cookies or collect data under its own policy.
+
 ## Affiliate links
 
 Some links on SoloMatcha go to retailers. If you click one, the retailer or its affiliate network may set a cookie so a purchase can be credited to us. We may earn a commission at no extra cost to you. See [How SoloMatcha is paid](/disclosure/).
