@@ -222,8 +222,32 @@ def jsonld_for(site, guide):
         "author": {"@type": "Organization", "name": site["name"], "url": site["url"]},
         "publisher": {"@type": "Organization", "name": site["name"], "url": site["url"]},
         "mainEntityOfPage": site["url"] + guide["url"],
+        "image": site["url"] + "/assets/og.png",
     }
-    return json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    crumbs = {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Guides", "item": site["url"] + "/guides/"},
+            {"@type": "ListItem", "position": 2, "name": guide["category_label"],
+             "item": f"{site['url']}/guides/topic/{guide['category']}/"},
+            {"@type": "ListItem", "position": 3, "name": guide["title"], "item": site["url"] + guide["url"]},
+        ],
+    }
+    graph = {"@context": "https://schema.org", "@graph": [{k: v for k, v in data.items() if k != "@context"}, crumbs]}
+    return json.dumps(graph, ensure_ascii=False).replace("</", "<\\/")
+
+
+def jsonld_for_home(site):
+    graph = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {"@type": "WebSite", "name": site["name"], "url": site["url"] + "/",
+             "description": site["description"], "inLanguage": site["language"]},
+            {"@type": "Organization", "name": site["name"], "url": site["url"] + "/",
+             "logo": site["url"] + "/favicon.svg"},
+        ],
+    }
+    return json.dumps(graph, ensure_ascii=False).replace("</", "<\\/")
 
 
 def month_groups(items):
@@ -297,7 +321,7 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
     write("index.html", "home.html",
           page_title=f"{site['name']}: {site['tagline']}",
           page_description=site["description"],
-          latest=guides[:3], upcoming=upcoming)
+          latest=guides[:3], upcoming=upcoming, jsonld=jsonld_for_home(site))
 
     # Archive + category pages
     write("guides/index.html", "archive.html",
