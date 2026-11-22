@@ -38,11 +38,8 @@
   <header class="mast">
     <a class="mark" href="/">Solo<span>Matcha</span></a>
     <nav aria-label="Sections">
-      <a href="/#label">Label test</a>
-      <a href="/#grades">Grades</a>
-      <a href="/#prices">Prices</a>
-      <a href="/#whisk">Whisking</a>
-      <a href="/guides/">Guides</a>
+      {% for sec in nav_sections %}<a href="/{{ sec.slug }}/">{{ sec.label }}</a>{% endfor %}
+      <a href="/search/" aria-label="Search">Search</a>
     </nav>
   </header>
 

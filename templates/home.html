@@ -7,8 +7,14 @@
   <section class="hero">
     <div>
       <p class="kanji" lang="ja">抹茶</p>
+      <p class="eyebrow">Independent matcha intelligence</p>
       <h1>Know your <em>matcha.</em></h1>
-      <p class="lede">A buyer&rsquo;s guide to pure matcha: how to read a tin, what the grades mean, and why the price keeps climbing.</p>
+      <p class="lede">Price-per-gram data, buyer&rsquo;s guides and plain-English explainers on pure matcha. No tins for sale, no sponsored rankings.</p>
+      <form class="search" role="search" action="/search/" method="get">
+        <label for="hq" class="sr">Search SoloMatcha</label>
+        <input id="hq" name="q" type="search" placeholder="Search grades, brands, prices" autocomplete="off">
+        <button class="btn primary" type="submit">Search</button>
+      </form>
     </div>
 
     <aside class="label" aria-label="The label we look for">
@@ -23,6 +29,28 @@
       </dl>
       <p class="fine">The label this site looks for before it recommends a tin.</p>
     </aside>
+  </section>
+
+  <section class="dash" aria-label="Market dashboard">
+    <div class="dash-head"><p class="eyebrow">Market dashboard</p>{% if dash.data_updated %}<span class="fine">Data checked {{ dash.data_updated|datefmt }}</span>{% endif %}</div>
+    <div class="widgets">
+      <a class="widget" href="/data/"><strong>{{ dash.products }}</strong><span>Products tracked</span></a>
+      <a class="widget" href="/data/"><strong>{{ dash.brands }}</strong><span>Brands in the database</span></a>
+      {% for g in top_by_currency %}
+      <a class="widget" href="/rankings/"><strong>{{ g.entries[0].ppg_text }}</strong><span>Lowest price per gram ({{ g.currency }})</span><small>{{ g.entries[0].title }}</small></a>
+      {% endfor %}
+      <a class="widget" href="/guides/"><strong>{{ dash.guides }}</strong><span>Published guides</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="start">
+    <div class="sectionhead"><div><p class="eyebrow">Start here</p><h2 class="title">Where to look</h2></div></div>
+    <ul class="cards">
+      <li><a href="/rankings/"><span class="k">Rankings</span><b>Price per gram, ranked</b><span>Every tin we track, from lowest to highest cost per gram.</span></a></li>
+      <li><a href="/data/"><span class="k">Data Center</span><b>The product database</b><span>Price, size and source for each tin, with the date we checked.</span></a></li>
+      <li><a href="/tools/"><span class="k">Tools</span><b>Cost-per-cup calculator</b><span>Compare any two tins on the same footing.</span></a></li>
+      <li><a href="/learn/"><span class="k">Learn</span><b>Guides for new buyers</b><span>Labels, grades and why the price keeps climbing.</span></a></li>
+    </ul>
   </section>
 
   {% if latest %}
@@ -123,6 +151,10 @@
       <div class="frame"><a class="play" href="https://www.youtube.com/watch?v=hzW4_n5Prxc" target="_blank" rel="noopener" data-title="Matcha 101 tutorial with Ippodo matcha"><img src="https://i.ytimg.com/vi/hzW4_n5Prxc/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" referrerpolicy="no-referrer"><span class="badge" aria-hidden="true"></span><span class="label">Play video: Matcha 101 tutorial</span></a></div>
       <figcaption>Video: &ldquo;Matcha 101 tutorial&rdquo; by Emi C on YouTube (2018), which prepares Ippodo matcha. Not produced by SoloMatcha. <a href="https://www.youtube.com/watch?v=hzW4_n5Prxc" target="_blank" rel="noopener">Watch on YouTube</a>.</figcaption>
     </figure>
+  </section>
+
+  <section class="section" id="newsletter">
+    {{ m.newsletter_form(site, "nl-home") }}
   </section>
 
   {% if upcoming %}

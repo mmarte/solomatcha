@@ -209,6 +209,117 @@ def load_topics():
         return list(csv.DictReader(fh))
 
 
+CURRENCY_SYMBOLS = {"USD": "$", "EUR": "\u20ac", "GBP": "\u00a3", "JPY": "\u00a5", "CAD": "CA$", "AUD": "A$"}
+PRODUCT_REQUIRED = ("slug", "brand", "productName", "price", "currency", "sizeGrams", "sourceUrl", "lastUpdated")
+PRODUCT_FIELDS = ("region", "cultivar", "grade", "harvestYear", "reviewScore", "availability")
+
+
+def money(value, currency, places=2):
+    sym = CURRENCY_SYMBOLS.get(currency, currency + "\u00a0")
+    if currency == "JPY":
+        places = 0 if value >= 100 else 1
+    return f"{sym}{value:,.{places}f}"
+
+
+def load_products(site, affiliates, problems):
+    """data/products.json -> list of product dicts with calculated price fields."""
+    data = load_json(ROOT / "data" / "products.json", {"products": []}) or {}
+    cup = float(site.get("cup_grams", 2))
+    out, seen = [], set()
+    for i, raw in enumerate(data.get("products", [])):
+        label = f"products.json[{i}] {raw.get('slug', '?')}"
+        missing = [f for f in PRODUCT_REQUIRED if raw.get(f) in (None, "")]
+        if missing:
+            problems.append(f"{label}: missing {', '.join(missing)}")
+            continue
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", raw["slug"]):
+            problems.append(f"{label}: bad slug")
+            continue
+        if raw["slug"] in seen:
+            problems.append(f"{label}: duplicate slug")
+        seen.add(raw["slug"])
+        if not (isinstance(raw["price"], (int, float)) and raw["price"] > 0
+                and isinstance(raw["sizeGrams"], (int, float)) and raw["sizeGrams"] > 0):
+            problems.append(f"{label}: price and sizeGrams must be positive numbers")
+            continue
+        try:
+            updated = as_date(raw["lastUpdated"], label)
+        except ValueError as exc:
+            problems.append(str(exc))
+            continue
+        if raw.get("reviewScore") is not None:
+            problems.append(f"{label}: reviewScore needs a published scoring method first (leave it null)")
+        links = []
+        for link in raw.get("affiliateLinks") or []:
+            entry = affiliates.get(link.get("key", ""))
+            if not entry or not entry.get("url"):
+                problems.append(f"{label}: unknown affiliate key {link.get('key')!r}")
+                continue
+            links.append({"label": link.get("label") or entry.get("label") or "Retailer", "url": entry["url"]})
+        ppg = raw["price"] / raw["sizeGrams"]
+        p = {k: raw.get(k) for k in PRODUCT_FIELDS}
+        p.update({
+            "slug": raw["slug"], "brand": raw["brand"], "name": raw["productName"],
+            "title": f"{raw['brand']} {raw['productName']}",
+            "url": f"/products/{raw['slug']}/",
+            "price": raw["price"], "currency": raw["currency"], "size": raw["sizeGrams"],
+            "price_text": money(raw["price"], raw["currency"], 0 if raw["price"] == int(raw["price"]) else 2),
+            "ppg": ppg, "ppg_text": money(ppg, raw["currency"], 2 if ppg >= 1 else 3),
+            "cup": ppg * cup, "cup_text": money(ppg * cup, raw["currency"]),
+            "source_url": raw["sourceUrl"], "affiliate_links": links,
+            "grade_note": raw.get("gradeNote"), "notes": raw.get("notes"), "updated": updated,
+        })
+        out.append(p)
+    out.sort(key=lambda p: (p["currency"], p["ppg"]))
+    return out
+
+
+def load_archive(problems):
+    """content/archive/YYYY/slug.md = frozen older versions of a guide."""
+    items = []
+    for path in sorted((ROOT / "content" / "archive").glob("*/*.md")):
+        label = f"archive/{path.parent.name}/{path.name}"
+        meta, body = parse_front_matter(path.read_text(encoding="utf-8"))
+        if not meta.get("title") or not meta.get("date"):
+            problems.append(f"{label}: needs title and date")
+            continue
+        try:
+            date = as_date(meta["date"], label)
+            archived = as_date(meta.get("archived"), label) or date
+        except ValueError as exc:
+            problems.append(str(exc))
+            continue
+        html_body, _ = render_markdown(body, {}, [], label)
+        items.append({
+            "slug": path.stem, "year": path.parent.name, "title": str(meta["title"]),
+            "description": str(meta.get("description", "")), "date": date, "archived": archived,
+            "current_url": f"/guides/{meta.get('current') or path.stem}/",
+            "url": f"/archive/{path.parent.name}/{path.stem}/", "html": html_body,
+        })
+    items.sort(key=lambda a: (a["archived"], a["slug"]), reverse=True)
+    return items
+
+
+def archive_guide(slug: str, today: dt.date = None) -> Path:
+    """Freeze the current version of a guide into content/archive/YYYY/ before you rewrite it."""
+    today = today or dt.date.today()
+    src = ROOT / "content" / "guides" / f"{slug}.md"
+    meta, body = parse_front_matter(src.read_text(encoding="utf-8"))
+    year = str(as_date(meta.get("updated") or meta.get("date"), slug).year)
+    dest = ROOT / "content" / "archive" / year / f"{slug}.md"
+    if dest.exists():
+        n = 2
+        while (dest.parent / f"{slug}-v{n}.md").exists():
+            n += 1
+        dest = dest.parent / f"{slug}-v{n}.md"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    meta = {k: (v.isoformat() if isinstance(v, dt.date) else v) for k, v in meta.items()}
+    meta["archived"] = today.isoformat()
+    meta["current"] = slug
+    dest.write_text("---\n" + yaml.safe_dump(meta, sort_keys=False, allow_unicode=True) + "---\n\n" + body, encoding="utf-8")
+    return dest
+
+
 # ---------------------------------------------------------------- output
 
 def jsonld_for(site, guide):
@@ -261,6 +372,74 @@ def month_groups(items):
     return groups
 
 
+def dashboard(products, guides, today):
+    stamps = [p["updated"] for p in products]
+    return {
+        "products": len(products),
+        "guides": len(guides),
+        "brands": len({p["brand"] for p in products}),
+        "data_updated": max(stamps) if stamps else None,
+    }
+
+
+def top_by_currency(products):
+    groups = {}
+    for p in products:
+        groups.setdefault(p["currency"], []).append(p)
+    return [{"currency": c, "entries": sorted(v, key=lambda p: p["ppg"])} for c, v in sorted(groups.items())]
+
+
+def build_platform_pages(write, site, guides, products, archive, today):
+    """Section hubs, product pages, tools, newsletter, archive versions. Returns [(url, date)] for the sitemap."""
+    extra = []
+    name = site["name"]
+    groups = top_by_currency(products)
+    for sec in site.get("sections", []):
+        slug, kind = sec["slug"], sec["kind"]
+        items = [g for g in guides if g["category"] in sec.get("categories", [])] if kind == "guides" else []
+        empty = (kind == "guides" and not items) or (kind in ("rankings", "data") and not products)
+        write(f"{slug}/index.html", "section.html",
+              page_title=f"{sec['label']} | {name}", page_description=sec["blurb"],
+              section=sec, items=items, groups=groups, products=products, empty=empty, noindex=empty)
+        if not empty:
+            dates = [g["date"] for g in items] + [p["updated"] for p in products]
+            extra.append((f"/{slug}/", max(dates) if dates else today))
+    for p in products:
+        write(f"products/{p['slug']}/index.html", "product.html",
+              page_title=f"{p['title']}: price per gram | {name}",
+              page_description=f"{p['title']} costs {p['ppg_text']} per gram ({p['price_text']} for {p['size']:g} g), checked {p['updated']:%B} {p['updated'].day}, {p['updated'].year}.",
+              product=p, jsonld=jsonld_for_product(site, p))
+        extra.append((p["url"], p["updated"]))
+    write("search/index.html", "search.html", page_title=f"Search | {name}",
+          page_description=f"Search {name} guides, products and tools.", noindex=True)
+    if archive:
+        write("archive/index.html", "archive_index.html", page_title=f"Archive of earlier versions | {name}",
+              page_description="Earlier versions of SoloMatcha guides, kept for reference.", archive=archive)
+        extra.append(("/archive/", archive[0]["archived"]))
+        for a in archive:
+            current_exists = any(g["url"] == a["current_url"] for g in guides)
+            write(f"archive/{a['year']}/{a['slug']}/index.html", "archive_version.html",
+                  page_title=f"{a['title']} (archived {a['archived'].year}) | {name}",
+                  page_description=a["description"] or a["title"], entry=a, current_exists=current_exists,
+                  canonical=site["url"] + a["current_url"] if current_exists else site["url"] + a["url"])
+    return extra
+
+
+def jsonld_for_product(site, p):
+    graph = {"@context": "https://schema.org", "@type": "Product", "name": p["title"],
+             "brand": {"@type": "Brand", "name": p["brand"]}, "category": "Matcha",
+             "offers": {"@type": "Offer", "price": f"{p['price']:g}", "priceCurrency": p["currency"],
+                        "url": p["source_url"]}}
+    return json.dumps(graph, ensure_ascii=False).replace("</", "<\\/")
+
+
+def write_search_index(out_dir, site, guides, products, pages):
+    rows = [{"t": g["title"], "u": g["url"], "d": g["description"], "k": "Guide"} for g in guides if not g["draft"]]
+    rows += [{"t": p["title"], "u": p["url"], "d": f"{p['ppg_text']} per gram, {p['price_text']} for {p['size']:g} g", "k": "Product"} for p in products]
+    rows += [{"t": s["label"], "u": f"/{s['slug']}/", "d": s["blurb"], "k": "Section"} for s in site.get("sections", [])]
+    (out_dir / "search.json").write_text(json.dumps(rows, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+
 def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = None):
     out_dir = Path(out_dir or ROOT / "public")
     today = today or dt.date.today()
@@ -271,6 +450,8 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
     guides = load_guides(site, affiliates, today, include_drafts, problems, warnings)
     pages = load_pages(affiliates, problems, include_drafts)
     topics = load_topics()
+    products = load_products(site, affiliates, problems)
+    archive = load_archive(problems)
 
     if problems:
         raise BuildError(problems)
@@ -295,6 +476,8 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
         "page_slugs": [p["slug"] for p in pages],
         "footer_pages": [p for p in pages if p["footer"]],
         "total_guides": len(guides),
+        "total_products": len(products),
+        "nav_sections": site.get("sections", []),
         "noindex": False,
     }
 
@@ -321,7 +504,11 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
     write("index.html", "home.html",
           page_title=f"{site['name']}: {site['tagline']}",
           page_description=site["description"],
-          latest=guides[:3], upcoming=upcoming, jsonld=jsonld_for_home(site))
+          latest=guides[:3], upcoming=upcoming, jsonld=jsonld_for_home(site),
+          products=products, dash=dashboard(products, guides, today),
+          top_by_currency=top_by_currency(products))
+
+    extra_urls = build_platform_pages(write, site, guides, products, archive, today)
 
     # Archive + category pages
     write("guides/index.html", "archive.html",
@@ -363,6 +550,7 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
     urls += [(f"{site['url']}/guides/topic/{c['slug']}/", today) for c in categories]
     urls += [(site["url"] + g["url"], g["updated"] or g["date"]) for g in live]
     urls += [(f"{site['url']}/{p['slug']}/", today) for p in pages]
+    urls += [(site["url"] + u, d) for u, d in extra_urls]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for loc, last in urls:
@@ -385,7 +573,9 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
             f"    <language>{site['language']}</language>\n" + "\n".join(items) + "\n</channel></rss>\n")
     (out_dir / "feed.xml").write_text(feed, encoding="utf-8")
 
-    return {"guides": len(guides), "drafts": sum(1 for g in guides if g["draft"]),
+    write_search_index(out_dir, site, guides, products, pages)
+
+    return {"guides": len(guides), "products": len(products), "drafts": sum(1 for g in guides if g["draft"]),
             "pages": len(pages), "warnings": warnings, "out": str(out_dir)}
 
 
@@ -394,7 +584,12 @@ def main(argv=None):
     ap.add_argument("--drafts", action="store_true", help="include draft guides (marked noindex)")
     ap.add_argument("--out", default=None, help="output directory (default: public)")
     ap.add_argument("--today", default=None, help="override today's date, YYYY-MM-DD")
+    ap.add_argument("--archive", metavar="SLUG", default=None,
+                    help="copy guide SLUG into content/archive/YYYY/ before you rewrite it, then exit")
     args = ap.parse_args(argv)
+    if args.archive:
+        print(f"Archived to {archive_guide(args.archive)}")
+        return 0
     today = dt.date.fromisoformat(args.today) if args.today else None
     try:
         summary = build(args.out, args.drafts, today)

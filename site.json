@@ -2,8 +2,8 @@
   "name": "SoloMatcha",
   "domain": "solomatcha.com",
   "url": "https://solomatcha.com",
-  "tagline": "A buyer's guide to pure matcha",
-  "description": "A buyer's guide to pure matcha: how to read a tin, what the grades mean, and why the price keeps climbing.",
+  "tagline": "Independent matcha intelligence",
+  "description": "Independent matcha intelligence: price-per-gram data, buyer's guides and plain-English explainers on pure matcha.",
   "language": "en",
   "head_snippets": [],
   "body_start_snippets": [],
@@ -41,5 +41,69 @@
     {
       "code": "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4EJZ67LL4W');"
     }
-  ]
+  ],
+  "sections": [
+    {
+      "slug": "learn",
+      "label": "Learn",
+      "kind": "guides",
+      "categories": [
+        "explainers",
+        "how-to",
+        "buying-guides"
+      ],
+      "blurb": "Explainers, how-tos and buying guides. Start here if you are new to matcha."
+    },
+    {
+      "slug": "reviews",
+      "label": "Reviews",
+      "kind": "guides",
+      "categories": [
+        "reviews"
+      ],
+      "blurb": "Tastings and reviews that name the tin, the price paid and the date checked."
+    },
+    {
+      "slug": "comparisons",
+      "label": "Comparisons",
+      "kind": "guides",
+      "categories": [
+        "comparisons"
+      ],
+      "blurb": "Side-by-side comparisons of brands, grades and styles."
+    },
+    {
+      "slug": "rankings",
+      "label": "Rankings",
+      "kind": "rankings",
+      "blurb": "Rankings built from the product database, with the method shown."
+    },
+    {
+      "slug": "data",
+      "label": "Data Center",
+      "kind": "data",
+      "blurb": "Every product we track, with price, size and price per gram."
+    },
+    {
+      "slug": "tools",
+      "label": "Tools",
+      "kind": "tools",
+      "blurb": "Small calculators for comparing tins on the same footing."
+    },
+    {
+      "slug": "newsletter",
+      "label": "Newsletter",
+      "kind": "newsletter",
+      "blurb": "Matcha Weekly: price moves, new data and new guides."
+    }
+  ],
+  "newsletter": {
+    "name": "Matcha Weekly",
+    "action": "",
+    "method": "post",
+    "email_field": "email",
+    "hidden_fields": {},
+    "note": "Set action to your email provider's form URL to switch the signup form on."
+  },
+  "cup_grams": 2
 }

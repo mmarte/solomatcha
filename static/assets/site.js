@@ -64,3 +64,51 @@ document.addEventListener("click", function (e) {
     choose(t.getAttribute("data-consent"));
   });
 })();
+
+// Price calculator (Tools page)
+(function () {
+  var price = document.getElementById("c-price");
+  if (!price) return;
+  var grams = document.getElementById("c-grams"), cup = document.getElementById("c-cup");
+  function fmt(n) { return isFinite(n) && n > 0 ? n.toLocaleString(undefined, { maximumFractionDigits: n < 1 ? 3 : 2 }) : "–"; }
+  function calc() {
+    var p = parseFloat(price.value), g = parseFloat(grams.value), c = parseFloat(cup.value);
+    var ppg = p / g;
+    document.getElementById("c-ppg").textContent = fmt(ppg);
+    document.getElementById("c-ppc").textContent = fmt(ppg * c);
+    document.getElementById("c-cups").textContent = fmt(Math.floor(g / c));
+  }
+  [price, grams, cup].forEach(function (el) { el.addEventListener("input", calc); });
+  calc();
+})();
+
+// Site search: filters /search.json in the browser; nothing is sent anywhere.
+(function () {
+  var box = document.getElementById("results");
+  var input = document.getElementById("q");
+  if (!box || !input) return;
+  var data = null;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function render() {
+    var q = input.value.trim().toLowerCase();
+    if (!data || !q) { box.innerHTML = q ? "" : '<li class="empty">Type to search guides, products and tools.</li>'; return; }
+    var words = q.split(/\s+/);
+    var hits = data.map(function (r) {
+      var hay = (r.t + " " + r.d).toLowerCase(), score = 0;
+      for (var i = 0; i < words.length; i++) {
+        if (hay.indexOf(words[i]) === -1) return null;
+        score += r.t.toLowerCase().indexOf(words[i]) !== -1 ? 2 : 1;
+      }
+      return { r: r, s: score };
+    }).filter(Boolean).sort(function (a, b) { return b.s - a.s; });
+    box.innerHTML = hits.length ? hits.map(function (h) {
+      return '<li><span class="t"><a href="' + esc(h.r.u) + '">' + esc(h.r.t) + '</a></span><span class="k">' + esc(h.r.k) + '</span><p class="d">' + esc(h.r.d) + '</p></li>';
+    }).join("") : '<li class="empty">No results. Try a shorter word.</li>';
+  }
+  var qs = new URLSearchParams(location.search).get("q");
+  if (qs) input.value = qs;
+  input.addEventListener("input", render);
+  fetch("/search.json").then(function (r) { return r.json(); }).then(function (d) { data = d; render(); }).catch(function () {
+    box.innerHTML = '<li class="empty">Search could not load. Browse the <a href="/guides/">archive</a> instead.</li>';
+  });
+})();
