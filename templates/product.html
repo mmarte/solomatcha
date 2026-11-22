@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head_extra %}<script type="application/ld+json">{{ jsonld|safe }}</script>{% endblock %}
+{% block content %}
+<article class="article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/data/">Data Center</a> / {{ product.brand }}</nav>
+  <h1 class="page-title">{{ product.title }}</h1>
+  <p class="meta">Price checked <time datetime="{{ product.updated.isoformat() }}">{{ product.updated|datefmt }}</time></p>
+  <dl class="spec">
+    <div><dt>Price</dt><dd>{{ product.price_text }}<small>for {{ '%g'|format(product.size) }} g</small></dd></div>
+    <div><dt>Per gram</dt><dd>{{ product.ppg_text }}</dd></div>
+    <div><dt>Per 2 g cup</dt><dd>{{ product.cup_text }}<small>before shipping and tax</small></dd></div>
+  </dl>
+  <div class="tablewrap"><table class="data"><tbody>
+    <tr><th>Brand</th><td>{{ product.brand }}</td></tr>
+    <tr><th>Grade label</th><td>{{ product.grade or 'Not stated' }}{% if product.grade_note %} <small>{{ product.grade_note }}</small>{% endif %}</td></tr>
+    <tr><th>Region</th><td>{{ product.region or 'Not stated on the seller page' }}</td></tr>
+    <tr><th>Cultivar</th><td>{{ product.cultivar or 'Not stated on the seller page' }}</td></tr>
+    <tr><th>Harvest year</th><td>{{ product.harvestYear or 'Not stated on the seller page' }}</td></tr>
+    <tr><th>Availability</th><td>{{ product.availability or 'Unknown' }}</td></tr>
+    <tr><th>Review score</th><td>Not scored yet</td></tr>
+  </tbody></table></div>
+  {% if product.notes %}<p class="dek">{{ product.notes }}</p>{% endif %}
+  <p><a href="{{ product.source_url }}" target="_blank" rel="noopener nofollow">Seller page (source of the price)</a>
+  {% for l in product.affiliate_links %} &middot; <a href="{{ l.url }}" rel="sponsored nofollow noopener" target="_blank">Buy at {{ l.label }}</a>{% endfor %}</p>
+  {% if product.affiliate_links %}<aside class="disclosure"><strong>Disclosure</strong>{{ site.article_disclosure }}</aside>{% endif %}
+</article>
+{% endblock %}

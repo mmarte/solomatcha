@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<article class="article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/archive/">Archive</a></nav>
+  <aside class="disclosure"><strong>Archived version</strong>This is an older version, kept for the record. Prices and facts here may be out of date.{% if current_exists %} <a href="{{ entry.current_url }}">Read the current version.</a>{% endif %}</aside>
+  <h1 class="page-title">{{ entry.title }}</h1>
+  <p class="meta">Published {{ entry.date|datefmt }} &middot; archived {{ entry.archived|datefmt }}</p>
+  <div class="prose">{{ entry.html|safe }}</div>
+</article>
+{% endblock %}

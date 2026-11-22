@@ -9,3 +9,35 @@
   {% endfor %}
 </ul>
 {% endmacro %}
+
+{% macro newsletter_form(site, id="nl") %}
+{% set nl = site.newsletter %}
+<div class="newsletter">
+  <h3>{{ nl.name }}</h3>
+  <p>One short email: price moves, new data and new guides. No sales pitches, unsubscribe any time.</p>
+  {% if nl.action %}
+  <form action="{{ nl.action }}" method="{{ nl.method|default('post') }}" target="_blank" rel="noopener">
+    {% for k, v in (nl.hidden_fields or {}).items() %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}
+    <label for="{{ id }}-email" class="sr">Email address</label>
+    <input id="{{ id }}-email" type="email" name="{{ nl.email_field|default('email') }}" placeholder="you@example.com" required autocomplete="email">
+    <button class="btn primary" type="submit">Subscribe</button>
+  </form>
+  <p class="fine">Your email goes to our email provider, not to advertisers. <a href="/privacy/">Privacy</a></p>
+  {% else %}
+  <p class="fine">The email signup opens soon. Until then, follow new guides by <a href="/feed.xml">RSS</a>.</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro ppg_table(items) %}
+<div class="tablewrap" tabindex="0" role="region" aria-label="Matcha price per gram">
+  <table class="data">
+    <thead><tr><th>#</th><th>Product</th><th>Size</th><th>Price</th><th>Per gram</th><th>Per 2 g cup</th><th>Checked</th></tr></thead>
+    <tbody>
+    {% for p in items %}
+      <tr><td>{{ loop.index }}</td><td><a href="{{ p.url }}">{{ p.title }}</a></td><td>{{ '%g'|format(p.size) }} g</td><td>{{ p.price_text }}</td><td><strong>{{ p.ppg_text }}</strong></td><td>{{ p.cup_text }}</td><td>{{ p.updated.isoformat() }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endmacro %}

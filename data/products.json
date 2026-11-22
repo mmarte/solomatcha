@@ -1,0 +1,43 @@
+{
+  "_note": "Product database. Only list products whose price and size you have checked on the seller's page. Use null for anything not verified. reviewScore stays null until the scoring method is published on /methodology/. pricePerGram is calculated by build.py.",
+  "products": [
+    {
+      "slug": "ippodo-ummon",
+      "brand": "Ippodo Tea",
+      "productName": "Ummon",
+      "region": null,
+      "cultivar": null,
+      "grade": null,
+      "gradeNote": "Not labeled with a grade word on the seller's US page.",
+      "price": 81,
+      "currency": "USD",
+      "sizeGrams": 40,
+      "sourceUrl": "https://ippodotea.com/products/ummon-40g-bag",
+      "affiliateLinks": [],
+      "availability": "unknown",
+      "harvestYear": null,
+      "reviewScore": null,
+      "lastUpdated": "2026-11-15",
+      "notes": "Seller describes powerful umami, deep emerald green color and sweet aroma. Packaged in Japan; best-before 180 days from packaging."
+    },
+    {
+      "slug": "ippodo-sayaka-no-mukashi",
+      "brand": "Ippodo Tea",
+      "productName": "Sayaka-no-mukashi",
+      "region": null,
+      "cultivar": null,
+      "grade": null,
+      "gradeNote": "Not labeled ceremonial by the seller.",
+      "price": 2800,
+      "currency": "JPY",
+      "sizeGrams": 20,
+      "sourceUrl": "https://global.ippodo-tea.co.jp/products/matcha103644",
+      "affiliateLinks": [],
+      "availability": "unknown",
+      "harvestYear": null,
+      "reviewScore": null,
+      "lastUpdated": "2026-11-15",
+      "notes": "Seller describes a refined taste with just the right amount of richness. Price is from the Ippodo global store."
+    }
+  ]
+}

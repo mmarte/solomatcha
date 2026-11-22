@@ -212,3 +212,86 @@ def test_analytics_gated_behind_consent(project):
     assert '<script async src="https://www.googletagmanager.com/gtag' not in home   # not loaded directly
     assert "Cookie settings" in home
     assert 'id="consent-config"' not in (project / "out" / "legal" / "index.html").read_text()
+
+
+# ---------------------------------------------------------------- phase 1
+
+def set_products(project, products):
+    (project / "data" / "products.json").write_text(json.dumps({"products": products}), encoding="utf-8")
+
+
+def product(**over):
+    p = {"slug": "x-tin", "brand": "X", "productName": "Tin", "price": 40, "currency": "USD",
+         "sizeGrams": 20, "sourceUrl": "https://example.com/p", "lastUpdated": "2026-11-01"}
+    p.update(over)
+    return p
+
+
+def test_price_per_gram_is_calculated(project):
+    set_products(project, [product()])
+    run(project)
+    page = (project / "out" / "products" / "x-tin" / "index.html").read_text()
+    assert "$2.00" in page and "per gram" in page.lower()
+    assert "/products/x-tin/" in (project / "out" / "sitemap.xml").read_text()
+
+
+def test_product_missing_field_fails(project):
+    set_products(project, [product(price=None)])
+    with pytest.raises(build.BuildError):
+        run(project)
+
+
+def test_review_score_blocked_until_method_published(project):
+    set_products(project, [product(reviewScore=4.5)])
+    with pytest.raises(build.BuildError):
+        run(project)
+
+
+def test_unknown_product_affiliate_key_fails(project):
+    set_products(project, [product(affiliateLinks=[{"key": "nope"}])])
+    with pytest.raises(build.BuildError):
+        run(project)
+
+
+def test_currencies_are_not_mixed(project):
+    set_products(project, [product(), product(slug="y-tin", currency="JPY", price=2800)])
+    run(project)
+    data = (project / "out" / "data" / "index.html").read_text()
+    assert "USD prices" in data and "JPY prices" in data
+
+
+def test_empty_sections_noindex_and_not_in_sitemap(project):
+    set_products(project, [])
+    run(project)
+    assert "noindex" in (project / "out" / "reviews" / "index.html").read_text()
+    assert "/reviews/" not in (project / "out" / "sitemap.xml").read_text()
+
+
+def test_search_index_lists_guides_and_products(project):
+    guide(project, "alpha-guide", title="Alpha matcha guide")
+    set_products(project, [product()])
+    run(project)
+    rows = json.loads((project / "out" / "search.json").read_text())
+    urls = {r["u"] for r in rows}
+    assert "/guides/alpha-guide/" in urls and "/products/x-tin/" in urls
+
+
+def test_archive_keeps_old_version_and_points_to_current(project):
+    guide(project, "alpha-guide", title="Alpha matcha guide")
+    dest = build.archive_guide("alpha-guide", today=TODAY)
+    assert dest.parent.name == "2026"
+    run(project)
+    page = (project / "out" / "archive" / "2026" / "alpha-guide" / "index.html").read_text()
+    assert "Archived version" in page
+    assert 'href="https://solomatcha.com/guides/alpha-guide/"' in page
+    assert (project / "out" / "guides" / "alpha-guide" / "index.html").exists()
+
+
+def test_newsletter_form_only_when_provider_set(project):
+    run(project)
+    assert "<form action=" not in (project / "out" / "newsletter" / "index.html").read_text()
+    site = json.loads((project / "site.json").read_text())
+    site["newsletter"]["action"] = "https://mail.example.com/subscribe"
+    (project / "site.json").write_text(json.dumps(site))
+    run(project)
+    assert 'action="https://mail.example.com/subscribe"' in (project / "out" / "newsletter" / "index.html").read_text()

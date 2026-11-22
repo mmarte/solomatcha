@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="pagehead">
+  <p class="eyebrow">Search</p>
+  <h1 class="page-title">Search SoloMatcha</h1>
+  <form class="search" role="search" action="/search/" method="get">
+    <label for="q" class="sr">Search</label>
+    <input id="q" name="q" type="search" placeholder="Try &ldquo;grades&rdquo;, &ldquo;Ippodo&rdquo; or &ldquo;price&rdquo;" autocomplete="off" autofocus>
+    <button class="btn primary" type="submit">Search</button>
+  </form>
+</section>
+<section class="archive" style="padding-bottom:48px">
+  <ul class="guides" id="results" aria-live="polite"></ul>
+  <noscript><p class="empty">Search needs JavaScript. Browse the <a href="/guides/">guide archive</a> or the <a href="/data/">Data Center</a> instead.</p></noscript>
+</section>
+{% endblock %}
