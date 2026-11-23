@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<article class="article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/comparisons/">Comparisons</a></nav>
+  <h1 class="page-title">{{ cmp.title }}</h1>
+  <p class="meta">Prices checked <time datetime="{{ cmp.updated.isoformat() }}">{{ cmp.updated|datefmt }}</time></p>
+  {% if cmp.diff %}
+  <p class="dek">{{ cmp.diff.cheaper.title }} costs less per gram: {{ cmp.diff.cheaper.ppg_text }} against {{ (cmp.b if cmp.diff.cheaper.slug == cmp.a.slug else cmp.a).ppg_text }}, so the other tin costs about {{ cmp.diff.pct }}% more per gram.</p>
+  {% else %}
+  <p class="dek">These two tins are priced in different currencies, so we show each price as listed and do not calculate a difference.</p>
+  {% endif %}
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Side-by-side comparison">
+    <table class="data">
+      <thead><tr><th></th><th><a href="{{ cmp.a.url }}">{{ cmp.a.title }}</a></th><th><a href="{{ cmp.b.url }}">{{ cmp.b.title }}</a></th></tr></thead>
+      <tbody>
+        <tr><th>Price</th><td>{{ cmp.a.price_text }}</td><td>{{ cmp.b.price_text }}</td></tr>
+        <tr><th>Size</th><td>{{ '%g'|format(cmp.a.size) }} g</td><td>{{ '%g'|format(cmp.b.size) }} g</td></tr>
+        <tr><th>Per gram</th><td><strong>{{ cmp.a.ppg_text }}</strong></td><td><strong>{{ cmp.b.ppg_text }}</strong></td></tr>
+        <tr><th>Per 2 g cup</th><td>{{ cmp.a.cup_text }}</td><td>{{ cmp.b.cup_text }}</td></tr>
+        <tr><th>Grade label</th><td>{{ cmp.a.grade or 'Not stated' }}</td><td>{{ cmp.b.grade or 'Not stated' }}</td></tr>
+        <tr><th>Region</th><td>{{ cmp.a.region or 'Not stated' }}</td><td>{{ cmp.b.region or 'Not stated' }}</td></tr>
+        <tr><th>Cultivar</th><td>{{ cmp.a.cultivar or 'Not stated' }}</td><td>{{ cmp.b.cultivar or 'Not stated' }}</td></tr>
+        <tr><th>Harvest year</th><td>{{ cmp.a.harvestYear or 'Not stated' }}</td><td>{{ cmp.b.harvestYear or 'Not stated' }}</td></tr>
+        <tr><th>Seller says</th><td>{{ cmp.a.notes or '' }}</td><td>{{ cmp.b.notes or '' }}</td></tr>
+        <tr><th>Source</th><td><a href="{{ cmp.a.source_url }}" target="_blank" rel="noopener nofollow">Seller page</a></td><td><a href="{{ cmp.b.source_url }}" target="_blank" rel="noopener nofollow">Seller page</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  {% if cmp.note %}<p class="note">{{ cmp.note }}</p>{% endif %}
+  <p class="note">Price per gram compares cost, not taste. Not stated means the seller page does not say, not that we checked and found nothing. <a href="/methodology/">How we compare</a></p>
+</article>
+{% endblock %}

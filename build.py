@@ -25,6 +25,7 @@ import json
 import math
 import re
 import shutil
+from decimal import Decimal, ROUND_HALF_UP
 import sys
 from pathlib import Path
 from xml.sax.saxutils import escape as xml_escape
@@ -218,7 +219,8 @@ def money(value, currency, places=2):
     sym = CURRENCY_SYMBOLS.get(currency, currency + "\u00a0")
     if currency == "JPY":
         places = 0 if value >= 100 else 1
-    return f"{sym}{value:,.{places}f}"
+    q = Decimal(str(round(value, 9))).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+    return f"{sym}{q:,.{places}f}"
 
 
 def load_products(site, affiliates, problems):
@@ -271,6 +273,31 @@ def load_products(site, affiliates, problems):
         })
         out.append(p)
     out.sort(key=lambda p: (p["currency"], p["ppg"]))
+    return out
+
+
+def load_comparisons(products, problems):
+    """data/comparisons.json: hand-picked product pairs worth a side-by-side page."""
+    data = load_json(ROOT / "data" / "comparisons.json", {"comparisons": []}) or {}
+    by_slug = {p["slug"]: p for p in products}
+    out, seen = [], set()
+    for i, c in enumerate(data.get("comparisons", [])):
+        a, b = by_slug.get(c.get("a")), by_slug.get(c.get("b"))
+        if not a or not b or a is b:
+            problems.append(f"comparisons.json[{i}]: both 'a' and 'b' must be different slugs from products.json")
+            continue
+        slug = f"{a['slug']}-vs-{b['slug']}"
+        if slug in seen:
+            problems.append(f"comparisons.json[{i}]: duplicate pair {slug}")
+        seen.add(slug)
+        same = a["currency"] == b["currency"]
+        diff = None
+        if same:
+            cheaper, dearer = sorted((a, b), key=lambda p: p["ppg"])
+            diff = {"cheaper": cheaper, "pct": round((dearer["ppg"] / cheaper["ppg"] - 1) * 100)}
+        out.append({"slug": slug, "url": f"/compare/{slug}/", "a": a, "b": b,
+                    "title": f"{a['title']} vs {b['title']}", "same_currency": same, "diff": diff,
+                    "note": c.get("note"), "updated": max(a["updated"], b["updated"])})
     return out
 
 
@@ -389,7 +416,20 @@ def top_by_currency(products):
     return [{"currency": c, "entries": sorted(v, key=lambda p: p["ppg"])} for c, v in sorted(groups.items())]
 
 
-def build_platform_pages(write, site, guides, products, archive, today):
+def ranking_list(products):
+    """One ranking per currency; indexed only when it ranks at least two tins."""
+    out = []
+    for g in top_by_currency(products):
+        cur = g["currency"]
+        out.append({"slug": f"price-per-gram-{cur.lower()}", "url": f"/rankings/price-per-gram-{cur.lower()}/",
+                    "currency": cur, "entries": g["entries"],
+                    "title": f"Matcha price per gram ranking ({cur})",
+                    "description": f"{len(g['entries'])} matcha tin{'' if len(g['entries']) == 1 else 's'} priced in {cur}, ranked from lowest to highest price per gram.",
+                    "indexable": len(g["entries"]) >= 2})
+    return out
+
+
+def build_platform_pages(write, site, guides, products, archive, today, comparisons=()):
     """Section hubs, product pages, tools, newsletter, archive versions. Returns [(url, date)] for the sitemap."""
     extra = []
     name = site["name"]
@@ -397,12 +437,15 @@ def build_platform_pages(write, site, guides, products, archive, today):
     for sec in site.get("sections", []):
         slug, kind = sec["slug"], sec["kind"]
         items = [g for g in guides if g["category"] in sec.get("categories", [])] if kind == "guides" else []
-        empty = (kind == "guides" and not items) or (kind in ("rankings", "data") and not products)
+        rank_pages = ranking_list(products) if kind == "rankings" else []
+        cmp_pages = comparisons if slug == "comparisons" else []
+        empty = (kind == "guides" and not items and not cmp_pages) or (kind in ("rankings", "data") and not products)
         write(f"{slug}/index.html", "section.html",
               page_title=f"{sec['label']} | {name}", page_description=sec["blurb"],
-              section=sec, items=items, groups=groups, products=products, empty=empty, noindex=empty)
+              section=sec, items=items, groups=groups, products=products, empty=empty, noindex=empty,
+              rank_pages=rank_pages, cmp_pages=cmp_pages)
         if not empty:
-            dates = [g["date"] for g in items] + [p["updated"] for p in products]
+            dates = [g["date"] for g in items] + [p["updated"] for p in products] + [c["updated"] for c in cmp_pages]
             extra.append((f"/{slug}/", max(dates) if dates else today))
     for p in products:
         write(f"products/{p['slug']}/index.html", "product.html",
@@ -410,6 +453,18 @@ def build_platform_pages(write, site, guides, products, archive, today):
               page_description=f"{p['title']} costs {p['ppg_text']} per gram ({p['price_text']} for {p['size']:g} g), checked {p['updated']:%B} {p['updated'].day}, {p['updated'].year}.",
               product=p, jsonld=jsonld_for_product(site, p))
         extra.append((p["url"], p["updated"]))
+    for r in ranking_list(products):
+        write(f"rankings/{r['slug']}/index.html", "ranking.html",
+              page_title=f"{r['title']} | {name}", page_description=r["description"], ranking=r,
+              jsonld=jsonld_for_ranking(site, r), noindex=not r["indexable"])
+        if r["indexable"]:
+            extra.append((r["url"], max(p["updated"] for p in r["entries"])))
+    for c in comparisons:
+        write(f"compare/{c['slug']}/index.html", "compare.html",
+              page_title=f"{c['title']}: price and details | {name}",
+              page_description=f"{c['title']} side by side: size, price, price per gram and what each seller states, with the date checked.",
+              cmp=c)
+        extra.append((c["url"], c["updated"]))
     write("search/index.html", "search.html", page_title=f"Search | {name}",
           page_description=f"Search {name} guides, products and tools.", noindex=True)
     if archive:
@@ -425,6 +480,14 @@ def build_platform_pages(write, site, guides, products, archive, today):
     return extra
 
 
+def jsonld_for_ranking(site, r):
+    graph = {"@context": "https://schema.org", "@type": "ItemList", "name": r["title"],
+             "itemListOrder": "https://schema.org/ItemListOrderAscending",
+             "itemListElement": [{"@type": "ListItem", "position": i, "name": p["title"], "url": site["url"] + p["url"]}
+                                 for i, p in enumerate(r["entries"], 1)]}
+    return json.dumps(graph, ensure_ascii=False).replace("</", "<\\/")
+
+
 def jsonld_for_product(site, p):
     graph = {"@context": "https://schema.org", "@type": "Product", "name": p["title"],
              "brand": {"@type": "Brand", "name": p["brand"]}, "category": "Matcha",
@@ -433,9 +496,11 @@ def jsonld_for_product(site, p):
     return json.dumps(graph, ensure_ascii=False).replace("</", "<\\/")
 
 
-def write_search_index(out_dir, site, guides, products, pages):
+def write_search_index(out_dir, site, guides, products, pages, comparisons=()):
     rows = [{"t": g["title"], "u": g["url"], "d": g["description"], "k": "Guide"} for g in guides if not g["draft"]]
     rows += [{"t": p["title"], "u": p["url"], "d": f"{p['ppg_text']} per gram, {p['price_text']} for {p['size']:g} g", "k": "Product"} for p in products]
+    rows += [{"t": c["title"], "u": c["url"], "d": "Side-by-side comparison", "k": "Comparison"} for c in comparisons]
+    rows += [{"t": r["title"], "u": r["url"], "d": r["description"], "k": "Ranking"} for r in ranking_list(products)]
     rows += [{"t": s["label"], "u": f"/{s['slug']}/", "d": s["blurb"], "k": "Section"} for s in site.get("sections", [])]
     (out_dir / "search.json").write_text(json.dumps(rows, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
@@ -452,6 +517,7 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
     topics = load_topics()
     products = load_products(site, affiliates, problems)
     archive = load_archive(problems)
+    comparisons = load_comparisons(products, problems)
 
     if problems:
         raise BuildError(problems)
@@ -508,7 +574,7 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
           products=products, dash=dashboard(products, guides, today),
           top_by_currency=top_by_currency(products))
 
-    extra_urls = build_platform_pages(write, site, guides, products, archive, today)
+    extra_urls = build_platform_pages(write, site, guides, products, archive, today, comparisons)
 
     # Archive + category pages
     write("guides/index.html", "archive.html",
@@ -573,7 +639,7 @@ def build(out_dir: Path = None, include_drafts: bool = False, today: dt.date = N
             f"    <language>{site['language']}</language>\n" + "\n".join(items) + "\n</channel></rss>\n")
     (out_dir / "feed.xml").write_text(feed, encoding="utf-8")
 
-    write_search_index(out_dir, site, guides, products, pages)
+    write_search_index(out_dir, site, guides, products, pages, comparisons)
 
     return {"guides": len(guides), "products": len(products), "drafts": sum(1 for g in guides if g["draft"]),
             "pages": len(pages), "warnings": warnings, "out": str(out_dir)}
