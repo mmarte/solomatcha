@@ -38,6 +38,44 @@
       "reviewScore": null,
       "lastUpdated": "2026-11-15",
       "notes": "Seller describes a refined taste with just the right amount of richness. Price is from the Ippodo global store."
+    },
+    {
+      "slug": "jade-leaf-teahouse-edition",
+      "brand": "Jade Leaf",
+      "productName": "Organic Ceremonial Teahouse Edition",
+      "region": "Uji and Kagoshima, Japan",
+      "cultivar": "Saemidori, Okumidori, Tsuyuhikari, Asanoka, Kanayamidori",
+      "grade": "Ceremonial - Premium First Harvest Tea Leaves",
+      "gradeNote": null,
+      "price": 26.99,
+      "currency": "USD",
+      "sizeGrams": 30,
+      "sourceUrl": "https://www.jadeleafmatcha.com/products/organic-teahouse-edition-ceremonial-matcha",
+      "affiliateLinks": [],
+      "availability": "unknown",
+      "harvestYear": null,
+      "reviewScore": null,
+      "lastUpdated": "2026-11-22",
+      "notes": "Price is the 30 g tin as listed on Jade Leaf's own page on the check date; the page's metadata showed a different figure, so check the seller. The seller says the leaves are first harvest from family-owned partner farms and names the cultivars, but gives no harvest date."
+    },
+    {
+      "slug": "encha-ceremonial-grade",
+      "brand": "Encha",
+      "productName": "Ceremonial Grade Matcha Powder",
+      "region": "Uji, Japan",
+      "cultivar": null,
+      "grade": "Ceremonial",
+      "gradeNote": "Encha says its grades are ground from tea leaves grown on its farm in Uji, Japan; the page does not give a separate origin for this product.",
+      "price": 19.99,
+      "currency": "USD",
+      "sizeGrams": 30,
+      "sourceUrl": "https://encha.com/collections/shop-encha-matcha",
+      "affiliateLinks": [],
+      "availability": "unknown",
+      "harvestYear": null,
+      "reviewScore": null,
+      "lastUpdated": "2026-11-22",
+      "notes": "Listed as 'from $19.99' for the 30 g size on Encha's collection page. The seller describes it as about 15 cups. No harvest date is stated."
     }
   ]
 }

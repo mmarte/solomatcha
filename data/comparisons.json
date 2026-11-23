@@ -1,6 +1,17 @@
 {
   "_note": "Pairs of slugs from products.json that get a side-by-side page at /compare/a-vs-b/.",
   "comparisons": [
-    {"a": "ippodo-ummon", "b": "ippodo-sayaka-no-mukashi"}
+    {
+      "a": "ippodo-ummon",
+      "b": "ippodo-sayaka-no-mukashi"
+    },
+    {
+      "a": "jade-leaf-teahouse-edition",
+      "b": "encha-ceremonial-grade"
+    },
+    {
+      "a": "ippodo-ummon",
+      "b": "jade-leaf-teahouse-edition"
+    }
   ]
 }
