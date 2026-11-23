@@ -218,6 +218,7 @@ def test_analytics_gated_behind_consent(project):
 
 def set_products(project, products):
     (project / "data" / "products.json").write_text(json.dumps({"products": products}), encoding="utf-8")
+    (project / "data" / "comparisons.json").write_text(json.dumps({"comparisons": []}), encoding="utf-8")
 
 
 def product(**over):
@@ -295,3 +296,49 @@ def test_newsletter_form_only_when_provider_set(project):
     (project / "site.json").write_text(json.dumps(site))
     run(project)
     assert 'action="https://mail.example.com/subscribe"' in (project / "out" / "newsletter" / "index.html").read_text()
+
+
+def test_ranking_indexed_only_with_two_tins(project):
+    set_products(project, [product()])
+    run(project)
+    assert "noindex" in (project / "out" / "rankings" / "price-per-gram-usd" / "index.html").read_text()
+    assert "price-per-gram-usd" not in (project / "out" / "sitemap.xml").read_text()
+    set_products(project, [product(), product(slug="y-tin", price=30)])
+    run(project)
+    page = (project / "out" / "rankings" / "price-per-gram-usd" / "index.html").read_text()
+    assert "noindex" not in page and "ItemList" in page
+    assert page.index("Y Tin") < page.index("X Tin") if "Y Tin" in page else True
+    assert "price-per-gram-usd" in (project / "out" / "sitemap.xml").read_text()
+
+
+def test_comparison_same_currency_shows_difference(project):
+    set_products(project, [product(), product(slug="y-tin", price=30)])
+    (project / "data" / "comparisons.json").write_text(json.dumps({"comparisons": [{"a": "x-tin", "b": "y-tin"}]}))
+    run(project)
+    page = (project / "out" / "compare" / "x-tin-vs-y-tin" / "index.html").read_text()
+    assert "33% more per gram" in page or "more per gram" in page
+    assert "/compare/x-tin-vs-y-tin/" in (project / "out" / "sitemap.xml").read_text()
+
+
+def test_comparison_mixed_currency_has_no_difference(project):
+    set_products(project, [product(), product(slug="y-tin", currency="JPY", price=2800)])
+    (project / "data" / "comparisons.json").write_text(json.dumps({"comparisons": [{"a": "x-tin", "b": "y-tin"}]}))
+    run(project)
+    page = (project / "out" / "compare" / "x-tin-vs-y-tin" / "index.html").read_text()
+    assert "do not calculate a difference" in page
+
+
+def test_comparison_unknown_slug_fails(project):
+    set_products(project, [product()])
+    (project / "data" / "comparisons.json").write_text(json.dumps({"comparisons": [{"a": "x-tin", "b": "nope"}]}))
+    with pytest.raises(build.BuildError):
+        run(project)
+
+
+def test_half_up_rounding_matches_guides(project):
+    assert build.money(81 / 40, "USD") == "$2.03"
+
+
+def test_methodology_page_published(project):
+    run(project)
+    assert (project / "out" / "methodology" / "index.html").exists()

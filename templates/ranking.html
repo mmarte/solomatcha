@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block head_extra %}<script type="application/ld+json">{{ jsonld|safe }}</script>{% endblock %}
+{% block content %}
+<article class="article">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/rankings/">Rankings</a> / {{ ranking.currency }}</nav>
+  <h1 class="page-title">{{ ranking.title }}</h1>
+  <p class="dek">{{ ranking.description }}</p>
+  {{ m.ppg_table(ranking.entries) }}
+  {% if not ranking.indexable %}<p class="note">Only one tin is priced in {{ ranking.currency }} so far, so there is nothing to rank against yet.</p>{% endif %}
+  <h2>How this ranking works</h2>
+  <ul>
+    <li>Price per gram is the price on the seller&rsquo;s page divided by the grams in the tin.</li>
+    <li>It ranks price only. It says nothing about taste or quality, and no quality score is included.</li>
+    <li>Prices exclude shipping and tax, and change often. Each row shows the date we checked.</li>
+    <li>Affiliate links never change the order. <a href="/methodology/">Full method</a></li>
+  </ul>
+</article>
+{% endblock %}

@@ -8,16 +8,19 @@
 </section>
 <section class="archive" style="padding-bottom: 48px;">
 {% if section.kind == "guides" %}
-  {% if items %}{{ m.guide_list(items) }}
+  {% if cmp_pages %}<h2 class="month">Side by side</h2>
+  <ul class="guides">{% for c in cmp_pages %}<li><span class="t"><a href="{{ c.url }}">{{ c.title }}</a></span><span class="k">Product comparison &middot; checked {{ c.updated|datefmt }}</span></li>{% endfor %}</ul>{% endif %}
+  {% if items %}{% if cmp_pages %}<h2 class="month">Articles</h2>{% endif %}{{ m.guide_list(items) }}
   <p class="note"><a href="/guides/">Browse every guide by date</a></p>
-  {% else %}<p class="empty">Nothing is published here yet. New pieces appear as soon as they pass our checks.</p>{% endif %}
+  {% elif not cmp_pages %}<p class="empty">Nothing is published here yet. New pieces appear as soon as they pass our checks.</p>{% endif %}
 
 {% elif section.kind == "rankings" %}
   {% if products %}
   <h2 class="title">Lowest price per gram</h2>
   <p class="intro">Ranked by the price printed on the seller&rsquo;s page divided by the grams in the tin. Currencies are never mixed, so each gets its own table. This ranks price only; it says nothing about taste.</p>
+  <ul class="guides">{% for r in rank_pages %}<li><span class="t"><a href="{{ r.url }}">{{ r.title }}</a></span><span class="k">{{ r.entries|length }} tin{{ '' if r.entries|length == 1 else 's' }}</span></li>{% endfor %}</ul>
   {% for g in groups %}<h3 class="month">{{ g.currency }}</h3>{{ m.ppg_table(g.entries) }}{% endfor %}
-  <p class="note">A quality score will be added only after the scoring method is published and we have tasted the tins ourselves. Until then you will see no score here.</p>
+  <p class="note"><a href="/methodology/">How rankings work.</a> A quality score will be added only after the scoring method is published and we have tasted the tins ourselves. Until then you will see no score here.</p>
   {% else %}<p class="empty">Rankings appear once products are added to the database.</p>{% endif %}
 
 {% elif section.kind == "data" %}
