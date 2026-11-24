@@ -30,7 +30,7 @@ document.addEventListener("click", function (e) {
     try { list = JSON.parse(cfg.textContent); } catch (e) {}
     list.forEach(function (item) {
       var s = document.createElement("script");
-      if (item.src) { s.src = item.src; s.async = true; } else { s.text = item.code; }
+      if (item.src) { s.src = item.src; s.async = true; if (item.crossorigin) s.crossOrigin = item.crossorigin; } else { s.text = item.code; }
       document.head.appendChild(s);
     });
   }

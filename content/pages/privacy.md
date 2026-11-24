@@ -18,7 +18,7 @@ Pages load fonts from Google Fonts. When your browser requests them, Google rece
 
 ## Analytics and your choice
 
-SoloMatcha uses Google Tag Manager and Google Analytics to see which guides people read (pages viewed, approximate location, device and browser). These tools set cookies and send data to Google. They stay off until you click Accept on the banner. If you click Decline, nothing is loaded and no analytics cookies are set. You can change your choice at any time with the Cookie settings link at the bottom of the home page or any guide. Your choice is saved in your browser. See [Google's privacy policy](https://policies.google.com/privacy) and the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout).
+SoloMatcha uses Google Tag Manager and Google Analytics to see which guides people read (pages viewed, approximate location, device and browser). These tools set cookies and send data to Google. They, and the advertising cookies described below, stay off until you click Accept on the banner. If you click Decline, nothing is loaded and no analytics cookies are set. You can change your choice at any time with the Cookie settings link at the bottom of the home page or any guide. Your choice is saved in your browser. See [Google's privacy policy](https://policies.google.com/privacy) and the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout).
 
 ## Embedded video
 
@@ -30,7 +30,7 @@ Some links on SoloMatcha go to retailers. If you click one, the retailer or its 
 
 ## Advertising
 
-SoloMatcha plans to show ads served by third-party advertising networks. When ads are switched on, this page will name each network and link to its privacy policy and opt-out page. These partners may use cookies and similar technologies to show ads and measure them, including ads based on your visits to this and other websites. Where the law requires it, you will be asked for your choices through a consent message before such cookies are set.
+SoloMatcha uses Google AdSense to show ads. The AdSense script loads only after you click Accept on the banner; if you decline, it is not loaded. If you accept, Google and its partners may use cookies and similar technologies to show and measure ads (see [how Google uses information from sites that use its services](https://policies.google.com/technologies/partner-sites) and [Google's privacy policy](https://policies.google.com/privacy)). These partners may use cookies and similar technologies to show ads and measure them, including ads based on your visits to this and other websites. Where the law requires it, you will be asked for your choices through a consent message before such cookies are set.
 
 You can also opt out of personalised advertising through your browser settings, or through the industry opt-out pages at [optout.aboutads.info](https://optout.aboutads.info) and [youronlinechoices.com](https://www.youronlinechoices.com).
 

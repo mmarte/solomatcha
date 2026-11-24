@@ -5,7 +5,9 @@
   "tagline": "Independent matcha intelligence",
   "description": "Independent matcha intelligence: price-per-gram data, buyer's guides and plain-English explainers on pure matcha.",
   "language": "en",
-  "head_snippets": [],
+  "head_snippets": [
+    "<meta name=\"google-adsense-account\" content=\"ca-pub-9606564936697177\">"
+  ],
   "body_start_snippets": [],
   "body_end_snippets": [],
   "footer_disclosure": "SoloMatcha plans to earn a commission when you buy through some links to retailers, and to show ads. Commissions do not change the price you pay.",
@@ -40,6 +42,10 @@
     },
     {
       "code": "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4EJZ67LL4W');"
+    },
+    {
+      "src": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9606564936697177",
+      "crossorigin": "anonymous"
     }
   ],
   "sections": [
